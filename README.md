@@ -65,30 +65,6 @@ unzip brats20-dataset-training-validation.zip -d data/
 
 ---
 
-## Project Structure
-
-```
-brain-mri-segmentation/
-├── data/
-│   ├── dataset.py          # BraTSDataset, DataLoaders, augmentations
-│   └── __init__.py
-├── models/
-│   ├── unet.py             # U-Net implementation
-│   ├── sam_finetune.py     # SAM wrapper for fine-tuning
-│   ├── losses.py           # Focal loss, Dice loss, metrics
-│   └── __init__.py
-├── notebooks/
-│   ├── eda.py              # Exploratory data analysis & visualisation
-│   └── plot_history.py     # Plot training curves from JSON history
-├── train.py                # Train U-Net and/or SAM
-├── evaluate.py             # Evaluate on test set, generate report
-├── app.py                  # Gradio demo
-├── requirements.txt
-└── README.md
-```
-
----
-
 ## Quick Start
 
 ### 1. Install dependencies
@@ -112,20 +88,11 @@ python notebooks/eda.py --data_root data/BraTS2020_TrainingData
 
 ### 4. Train
 ```bash
-# Train both models (recommended)
-python train.py \
-    --model both \
-    --data_root data/BraTS2020_TrainingData \
-    --sam_checkpoint sam_vit_b_01ec64.pth \
-    --epochs 30 \
-    --batch_size 16
-
 # U-Net only (faster, ~2h on RTX 3090)
 python train.py --model unet --data_root data/BraTS2020_TrainingData
 
 # SAM only
-python train.py --model sam --data_root data/BraTS2020_TrainingData \
-                --sam_checkpoint sam_vit_b_01ec64.pth
+python train.py --model sam --data_root data/BraTS2020_TrainingData --sam_checkpoint sam_vit_b_01ec64.pth
 ```
 
 ### 5. Evaluate
@@ -143,43 +110,6 @@ python app.py \
     --unet_checkpoint checkpoints/unet/best_model.pth \
     --sam_checkpoint_pth sam_vit_b_01ec64.pth \
     --sam_finetuned checkpoints/sam/best_model.pth
-```
-
----
-
-## Training Details
-
-| | U-Net | SAM |
-|---|---|---|
-| Optimizer | AdamW (lr=1e-4) | AdamW (lr=1e-4) |
-| Scheduler | CosineAnnealingLR | CosineAnnealingLR |
-| Loss | Focal (α=0.8, γ=2) + Dice | Same |
-| Augmentation | Flip, rotate, elastic, noise | Same |
-| Mixed precision | ✓ (AMP) | ✓ (AMP) |
-| Epochs | 30 | 30 |
-| Batch size | 16 | 16 |
-| GPU | RTX 3090 / A100 | Same |
-
----
-
-## Deploy to Hugging Face Spaces
-
-1. Create a new Space at [huggingface.co/new-space](https://huggingface.co/new-space) (Gradio SDK)
-2. Push this repo:
-```bash
-git remote add space https://huggingface.co/spaces/YOUR_USERNAME/brain-mri-segmentation
-git push space main
-```
-3. Upload checkpoints via the HF web UI or `huggingface-hub`:
-```bash
-pip install huggingface-hub
-python -c "
-from huggingface_hub import HfApi
-api = HfApi()
-api.upload_file('checkpoints/unet/best_model.pth',
-                repo_id='YOUR_USERNAME/brain-mri-segmentation',
-                repo_type='space')
-"
 ```
 
 ---
