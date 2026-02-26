@@ -1,8 +1,6 @@
-# 🧠 Brain MRI Tumor Segmentation: U-Net vs SAM
+# Brain MRI Tumor Segmentation: U-Net vs SAM
 
-Fine-tuning **SAM (Segment Anything Model)** and training a custom **U-Net** on BraTS 2020 brain tumor MRI data. An interactive Gradio demo lets you upload any FLAIR slice and compare both models side-by-side.
-
-**[📊 Live Demo on Hugging Face Spaces →](https://huggingface.co/spaces/yourname/brain-mri-segmentation)**
+Fine-tuning **SAM (Segment Anything Model)** and training a custom **U-Net** on BraTS 2020 brain tumor MRI data.
 
 ---
 
@@ -16,10 +14,6 @@ Fine-tuning **SAM (Segment Anything Model)** and training a custom **U-Net** on 
 *Evaluated on BraTS 2020 held-out test set (binary tumor vs. background).*
 
 **Key finding:** U-Net outperforms fine-tuned SAM on this domain-specific task while being 7× faster. SAM's ViT backbone is powerful but over-parameterised for single-modality binary segmentation when only the decoder is fine-tuned.
-
-![Training Curves](results/training_curves.png)
-
-![Sample Predictions](results/comparison.png)
 
 ---
 
